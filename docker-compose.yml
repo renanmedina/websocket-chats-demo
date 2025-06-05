@@ -1,0 +1,81 @@
+version: '2.9'
+services:
+  redis:
+    image: redis:8.0.2-alpine
+    container_name: chats-broker
+    networks:
+      - chats-system
+  loadbalancer:
+    image: jc21/nginx-proxy-manager:2.12.3
+    container_name: chats-loadbalancer
+    ports:
+      - 80:80 # HTTP CONNECTIONS
+      - 81:81
+    volumes:
+      - ./docker/nginx-proxy-manager/data:/data
+      - ./docker/nginx-proxy-manager/custom:/data/nginx/custom
+      - ./docker/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+    links:
+      - webclient
+      - websocket-server1
+      - websocket-server2
+      - websocket-server3
+    networks:
+      - chats-public
+      - chats-system
+  webclient:
+    build: 
+      dockerfile: Dockerfile.webclient
+    container_name: chats-ui
+    environment:
+      - WEBSOCKET_URI=ws.demo.chats.local
+    networks:
+      - chats-system
+  websocket-server1:
+    build:
+      dockerfile: Dockerfile.websocket
+    container_name: chats-websocket-server1
+    environment:
+      - REDIS_URI=redis://chats-broker:6379
+    depends_on:
+      - redis
+    links:
+      - redis
+    networks:
+      - chats-system
+  websocket-server2:
+    build:
+      dockerfile: Dockerfile.websocket
+    container_name: chats-websocket-server2
+    environment:
+      - REDIS_URI=redis://chats-broker:6379
+    depends_on:
+      - redis
+    links:
+      - redis
+    networks:
+      - chats-system
+  websocket-server3:
+    build:
+      dockerfile: Dockerfile.websocket
+    container_name: chats-websocket-server3
+    environment:
+      - REDIS_URI=redis://chats-broker:6379
+    depends_on:
+      - redis
+    links:
+      - redis
+    networks:
+      - chats-system
+networks:
+  chats-public:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+  chats-system:
+    name: chats-system
+
+
+
+
+      

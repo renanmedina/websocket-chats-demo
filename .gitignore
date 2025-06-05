@@ -1,0 +1,4 @@
+node_modules/*
+docker/nginx-proxy-manager/*
+!docker/nginx-proxy-manager/custom
+!docker/nginx-proxy-manager/default_configs

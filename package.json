@@ -1,0 +1,20 @@
+{
+  "name": "chatting-demo",
+  "version": "1.0.0",
+  "description": "websocket chatting demo with scalability ",
+  "type": "module",
+  "main": "./client/webserver.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./client/webserver.js",
+    "start-socket": "node ./server/websocket-server.js"
+  },
+  "author": "Renan Medina",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "pino": "^9.7.0",
+    "redis": "^5.5.5",
+    "socket.io": "^4.8.1"
+  }
+}
